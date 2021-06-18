@@ -23,10 +23,23 @@ appointmentsRouter.post('/', (request, response) => {
       appointmentsRepository,
     );
 
+<<<<<<< HEAD
     const appointment = createAppointment.execute({
       date: parsedDate,
       provider,
     });
+=======
+  if (findAppointmentInSameDate) {
+    return response
+      .status(400)
+      .json({ message: 'This appointment is already booked' });
+  }
+
+  const appointment = appointmentsRepository.create({
+    provider,
+    date: parsedDate,
+  });
+>>>>>>> feature/TrabalhandoComDados
 
     return response.json(appointment);
   } catch (err) {
