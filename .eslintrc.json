@@ -4,9 +4,10 @@
         "node": true
     },
     "extends": [
-        "airbnb-base",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:prettier/recommended"
+      "airbnb-base",
+      "plugin:@typescript-eslint/recommended",
+      "prettier/@typescript-eslint",
+      "plugin:prettier/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -19,22 +20,36 @@
     ],
     "rules": {
       "no-console":"off",
-      "no-use-before-define": "off",
-      "@typescript-eslint/no-use-before-define": [
-	      "error"
-      ],
+      "prettier/prettier": "error",
+      "no-useless-constructor": "off",
+      "no-unused-vars": "off",
+      "camelcase": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
+      // "@typescript-eslint/naming-convention": [
+      //   "error",
+      //   {
+      //     "selector": "interface",
+      //     "prefix": ["I"],
+      //     "format": ["PascalCase"]
+      //   }
+      // ],
+      "class-methods-use-this":"off",
       "import/extensions": [
         "error",
         "ignorePackages",
         {
           "ts": "never"
         }
-      ],
-      "prettier/prettier": "error"
+      ]
     },
     "settings": {
       "import/resolver": {
         "typescript": {}
       }
     }
-}
+  }
