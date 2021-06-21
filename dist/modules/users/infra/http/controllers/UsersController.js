@@ -40,13 +40,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var tsyringe_1 = require("tsyringe");
+var class_transformer_1 = require("class-transformer");
 var CreateUserService_1 = __importDefault(require("@modules/users/services/CreateUserService"));
 var SessionsController = /** @class */ (function () {
     function SessionsController() {
     }
     SessionsController.prototype.create = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, name, email, password, createUser, user, userWithoutPassword;
+            var _a, name, email, password, createUser, user;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -59,14 +60,7 @@ var SessionsController = /** @class */ (function () {
                             })];
                     case 1:
                         user = _b.sent();
-                        userWithoutPassword = {
-                            id: user.id,
-                            name: user.name,
-                            email: user.email,
-                            created_at: user.created_at,
-                            updated_at: user.updated_at,
-                        };
-                        return [2 /*return*/, response.json(userWithoutPassword)];
+                        return [2 /*return*/, response.json(class_transformer_1.classToClass(user))];
                 }
             });
         });

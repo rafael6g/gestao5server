@@ -41,11 +41,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var uuid_1 = require("uuid");
 var User_1 = __importDefault(require("../../infra/typeorm/entities/User"));
-var UsersRepository = /** @class */ (function () {
-    function UsersRepository() {
+var FakeUsersRepository = /** @class */ (function () {
+    function FakeUsersRepository() {
         this.users = [];
     }
-    UsersRepository.prototype.findById = function (id) {
+    FakeUsersRepository.prototype.findById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             var findUser;
             return __generator(this, function (_a) {
@@ -54,7 +54,7 @@ var UsersRepository = /** @class */ (function () {
             });
         });
     };
-    UsersRepository.prototype.findByEmail = function (email) {
+    FakeUsersRepository.prototype.findByEmail = function (email) {
         return __awaiter(this, void 0, void 0, function () {
             var findUser;
             return __generator(this, function (_a) {
@@ -63,7 +63,20 @@ var UsersRepository = /** @class */ (function () {
             });
         });
     };
-    UsersRepository.prototype.create = function (userData) {
+    FakeUsersRepository.prototype.findAllProviders = function (_a) {
+        var except_user_id = _a.except_user_id;
+        return __awaiter(this, void 0, void 0, function () {
+            var users;
+            return __generator(this, function (_b) {
+                users = this.users;
+                if (except_user_id) {
+                    users = this.users.filter(function (user) { return user.id !== except_user_id; });
+                }
+                return [2 /*return*/, users];
+            });
+        });
+    };
+    FakeUsersRepository.prototype.create = function (userData) {
         return __awaiter(this, void 0, void 0, function () {
             var user;
             return __generator(this, function (_a) {
@@ -74,7 +87,7 @@ var UsersRepository = /** @class */ (function () {
             });
         });
     };
-    UsersRepository.prototype.save = function (user) {
+    FakeUsersRepository.prototype.save = function (user) {
         return __awaiter(this, void 0, void 0, function () {
             var findIndex;
             return __generator(this, function (_a) {
@@ -84,6 +97,6 @@ var UsersRepository = /** @class */ (function () {
             });
         });
     };
-    return UsersRepository;
+    return FakeUsersRepository;
 }());
-exports.default = UsersRepository;
+exports.default = FakeUsersRepository;

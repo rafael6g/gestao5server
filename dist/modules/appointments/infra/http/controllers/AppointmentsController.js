@@ -39,7 +39,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var date_fns_1 = require("date-fns");
 var tsyringe_1 = require("tsyringe");
 var CreateAppointmentService_1 = __importDefault(require("@modules/appointments/services/CreateAppointmentService"));
 var AppointmentsController = /** @class */ (function () {
@@ -47,16 +46,17 @@ var AppointmentsController = /** @class */ (function () {
     }
     AppointmentsController.prototype.create = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, provider_id, date, parsedDate, createAppointment, appointment;
+            var user_id, _a, provider_id, date, createAppointment, appointment;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        user_id = request.user.id;
                         _a = request.body, provider_id = _a.provider_id, date = _a.date;
-                        parsedDate = date_fns_1.parseISO(date);
                         createAppointment = tsyringe_1.container.resolve(CreateAppointmentService_1.default);
                         return [4 /*yield*/, createAppointment.execute({
-                                date: parsedDate,
+                                date: date,
                                 provider_id: provider_id,
+                                user_id: user_id,
                             })];
                     case 1:
                         appointment = _b.sent();

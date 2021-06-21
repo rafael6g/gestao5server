@@ -54,9 +54,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tsyringe_1 = require("tsyringe");
 var AppError_1 = __importDefault(require("@shared/errors/AppError"));
 var CreateUserService = /** @class */ (function () {
-    function CreateUserService(usersRepository, hashProvider) {
+    function CreateUserService(usersRepository, hashProvider, cacheProvider) {
         this.usersRepository = usersRepository;
         this.hashProvider = hashProvider;
+        this.cacheProvider = cacheProvider;
     }
     CreateUserService.prototype.execute = function (_a) {
         var name = _a.name, email = _a.email, password = _a.password;
@@ -80,6 +81,9 @@ var CreateUserService = /** @class */ (function () {
                             })];
                     case 3:
                         user = _b.sent();
+                        return [4 /*yield*/, this.cacheProvider.invalidatePrefix('providers-list')];
+                    case 4:
+                        _b.sent();
                         return [2 /*return*/, user];
                 }
             });
@@ -89,7 +93,8 @@ var CreateUserService = /** @class */ (function () {
         tsyringe_1.injectable(),
         __param(0, tsyringe_1.inject('UsersRepository')),
         __param(1, tsyringe_1.inject('HashProvider')),
-        __metadata("design:paramtypes", [Object, Object])
+        __param(2, tsyringe_1.inject('CacheProvider')),
+        __metadata("design:paramtypes", [Object, Object, Object])
     ], CreateUserService);
     return CreateUserService;
 }());

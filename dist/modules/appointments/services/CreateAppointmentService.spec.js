@@ -40,48 +40,123 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var AppError_1 = __importDefault(require("@shared/errors/AppError"));
+var FakeNotificationsRepository_1 = __importDefault(require("@modules/notifications/repositories/fakes/FakeNotificationsRepository"));
+var FakeCacheProvider_1 = __importDefault(require("@shared/container/providers/CacheProvider/fakes/FakeCacheProvider"));
 var FakeAppointmentsRepository_1 = __importDefault(require("../repositories/fakes/FakeAppointmentsRepository"));
 var CreateAppointmentService_1 = __importDefault(require("./CreateAppointmentService"));
+var fakeAppointmentsRepository;
+var fakeNotificationsRepository;
+var fakeCacheProvider;
+var createAppointment;
 describe('CreateAppointment', function () {
+    beforeEach(function () {
+        fakeAppointmentsRepository = new FakeAppointmentsRepository_1.default();
+        fakeNotificationsRepository = new FakeNotificationsRepository_1.default();
+        fakeCacheProvider = new FakeCacheProvider_1.default();
+        createAppointment = new CreateAppointmentService_1.default(fakeAppointmentsRepository, fakeNotificationsRepository, fakeCacheProvider);
+    });
     it('should be able to create a new appointment', function () { return __awaiter(void 0, void 0, void 0, function () {
-        var fakeAppointmentsRepository, createAppointment, appointment;
+        var appointment;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    fakeAppointmentsRepository = new FakeAppointmentsRepository_1.default();
-                    createAppointment = new CreateAppointmentService_1.default(fakeAppointmentsRepository);
+                    jest.spyOn(Date, 'now').mockImplementationOnce(function () {
+                        return new Date(2021, 4, 10, 12).getTime();
+                    });
                     return [4 /*yield*/, createAppointment.execute({
-                            date: new Date(),
-                            provider_id: '123123',
+                            date: new Date(2021, 4, 10, 13),
+                            provider_id: 'provider-id',
+                            user_id: 'user-id',
                         })];
                 case 1:
                     appointment = _a.sent();
                     expect(appointment).toHaveProperty('id');
-                    expect(appointment.provider_id).toBe('123123');
+                    expect(appointment.provider_id).toBe('provider-id');
                     return [2 /*return*/];
             }
         });
     }); });
-});
-describe('CreateAppointment', function () {
     it('should not be able to create two appointments on the same time', function () { return __awaiter(void 0, void 0, void 0, function () {
-        var fakeAppointmentsRepository, createAppointment, appointmentDate;
+        var appointmentDate;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    fakeAppointmentsRepository = new FakeAppointmentsRepository_1.default();
-                    createAppointment = new CreateAppointmentService_1.default(fakeAppointmentsRepository);
-                    appointmentDate = new Date();
+                    appointmentDate = new Date(2021, 4, 10, 11);
                     return [4 /*yield*/, createAppointment.execute({
                             date: appointmentDate,
-                            provider_id: '123123',
+                            provider_id: 'provider-id',
+                            user_id: 'user-id',
                         })];
                 case 1:
                     _a.sent();
-                    expect(createAppointment.execute({
-                        date: appointmentDate,
-                        provider_id: '123123',
-                    })).rejects.toBeInstanceOf(AppError_1.default);
+                    return [4 /*yield*/, expect(createAppointment.execute({
+                            date: appointmentDate,
+                            provider_id: 'provider-id',
+                            user_id: 'user-id',
+                        })).rejects.toBeInstanceOf(AppError_1.default)];
+                case 2:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should not be able to create an appointment on a past date', function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    jest.spyOn(Date, 'now').mockImplementationOnce(function () {
+                        return new Date(2021, 4, 10, 12).getTime();
+                    });
+                    return [4 /*yield*/, expect(createAppointment.execute({
+                            date: new Date(2021, 4, 10, 11),
+                            provider_id: 'provider-id',
+                            user_id: 'user-id',
+                        })).rejects.toBeInstanceOf(AppError_1.default)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should not be able to create an appointment with same user as provider', function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    jest.spyOn(Date, 'now').mockImplementationOnce(function () {
+                        return new Date(2021, 4, 10, 12).getTime();
+                    });
+                    return [4 /*yield*/, expect(createAppointment.execute({
+                            date: new Date(2021, 4, 10, 13),
+                            provider_id: 'user-id',
+                            user_id: 'user-id',
+                        })).rejects.toBeInstanceOf(AppError_1.default)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should not be able to create an appointment before 8am and after 5pm', function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    jest.spyOn(Date, 'now').mockImplementationOnce(function () {
+                        return new Date(2021, 4, 10, 12).getTime();
+                    });
+                    return [4 /*yield*/, expect(createAppointment.execute({
+                            date: new Date(2021, 4, 11, 7),
+                            provider_id: 'user-id',
+                            user_id: 'provider-id',
+                        })).rejects.toBeInstanceOf(AppError_1.default)];
+                case 1:
+                    _a.sent();
+                    return [4 /*yield*/, expect(createAppointment.execute({
+                            date: new Date(2021, 4, 11, 18),
+                            provider_id: 'user-id',
+                            user_id: 'provider-id',
+                        })).rejects.toBeInstanceOf(AppError_1.default)];
+                case 2:
+                    _a.sent();
                     return [2 /*return*/];
             }
         });

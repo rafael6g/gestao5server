@@ -40,13 +40,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var tsyringe_1 = require("tsyringe");
+var class_transformer_1 = require("class-transformer");
 var UpdateUserAvatarService_1 = __importDefault(require("@modules/users/services/UpdateUserAvatarService"));
 var UserAvatarController = /** @class */ (function () {
     function UserAvatarController() {
     }
     UserAvatarController.prototype.update = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var updateUserAvatar, user, userWithoutPassword;
+            var updateUserAvatar, user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -57,14 +58,7 @@ var UserAvatarController = /** @class */ (function () {
                             })];
                     case 1:
                         user = _a.sent();
-                        userWithoutPassword = {
-                            id: user.id,
-                            name: user.name,
-                            email: user.email,
-                            created_at: user.created_at,
-                            updated_at: user.updated_at,
-                        };
-                        return [2 /*return*/, response.json(userWithoutPassword)];
+                        return [2 /*return*/, response.json(class_transformer_1.classToClass(user))];
                 }
             });
         });
